@@ -2,15 +2,14 @@ const mazeAPI = "https://api.tvmaze.com/shows";
 let movieDiv = document.getElementById("MovieDiv");
 const searchForm = document.getElementById("search-form-id");
 const searchInput = document.getElementById("input-id");
-const selectGenre = document.querySelector("#genre-select-id")
+const selectGenre = document.querySelector("#genre-select-id");
+const filterImdb = document.querySelector("#imdb-select-id");
 let Movies = [];
 let allGenres = [];
-
 fetch(mazeAPI)
     .then(response => response.json())
     .then(data => {
         Movies = data;
-
         CreateGenreOptions()
         DisplayMovies(Movies);
     })
@@ -26,6 +25,21 @@ selectGenre.addEventListener("change", (e) => {
         DisplayMovies(Movies);
     }
 })
+
+filterImdb.addEventListener("change", (e) => {
+    let value = filterImdb.value;
+    let sortedMovies;
+
+    if (value === "low-to-high") {
+        sortedMovies = Movies.slice().sort((a, b) => a.rating.average - b.rating.average);
+    } else if (value === "high-to-low") {
+        sortedMovies = Movies.slice().sort((a, b) => b.rating.average - a.rating.average);
+    } else {
+        sortedMovies = Movies; 
+    }
+
+    DisplayMovies(sortedMovies);
+});
 
 
 searchForm.addEventListener("submit", (e) => {
